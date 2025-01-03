@@ -1,0 +1,59 @@
+Conceptos
+	# Conceptos de Apache Kafka
+
+# Brokers
+# Los brokers son los servidores que forman el clúster de Kafka.
+# Cada broker es responsable de almacenar y gestionar un conjunto de particiones
+# y de servir las solicitudes de lectura y escritura de los clientes.
+
+# Zookeeper
+# Zookeeper es un servicio de coordinación que Kafka utiliza para gestionar el clúster.
+# Ayuda a mantener el estado de los brokers y particiones,
+# y gestiona la configuración y la gestión de líderes.
+
+# Topic
+# Un topic es una categoría o un stream de mensajes.
+# Los datos se escriben en topics y los consumidores leen datos de estos topics.
+# Los topics están divididos en particiones para mejorar la escalabilidad y la eficiencia.
+
+# Message
+# Un mensaje es la unidad de datos en Kafka.
+# Los mensajes consisten en una clave, un valor y una marca de tiempo,
+# y son escritos y leídos por los productores y consumidores.
+
+# Producer
+# Un producer es una aplicación que publica mensajes en uno o más topics en el clúster de Kafka.
+# Los productores envían datos a los brokers, que los almacenan en las particiones correspondientes.
+
+# Consumer
+# Un consumer es una aplicación que suscribe y lee mensajes de uno o más topics.
+# Los consumidores pueden pertenecer a un grupo de consumidores para compartir la carga de procesamiento.
+
+# Offset Lag
+# El offset lag es la diferencia entre el último mensaje producido en una partición
+# y el último mensaje consumido por un consumer.
+# Este valor ayuda a medir el retraso o la latencia del procesamiento de mensajes.
+
+# Retention Period
+# El retention period es el tiempo durante el cual Kafka conserva los mensajes en un topic antes de eliminarlos.
+# Este periodo se puede configurar según las necesidades de retención de datos de la aplicación.
+
+	
+Comando para iniciar zookeeper
+	- sh bin/zookeeper-server-start.sh config/zookeeper.properties
+Comando para iniciar el servidor de kafka
+	- sh bin/kafka-server-start.sh config/server.properties
+Comando para crear un topic
+	- sh bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic <topicName> -partitions 5 -replication-factor 1
+Comando para listar topics
+	- sh bin/kafka-topics.sh --list --bootstrap-server localhost:9092
+Comando para ver la definicion de un topic
+	- sh bin/kafka-topics.sh --describe --topic <topicName> --bootstrap-server localhost:9092
+Comando para crear un consumer
+	- sh bin/kafka-console-consumer.sh --topic <topicName> --bootstrap-server localhost:9092
+Comando para crear un producer
+	- sh bin/kafka-console-producer.sh --topic <topicName> --bootstrap-server localhost:9092
+Comando para crear un consumer y leer el historico del topic (leer desde el comienzo)
+ - sh bin/kafka-console-consumer.sh --topic arcsystem-nginx-logs --bootstrap-server localhost:9092 --from-beginning
+Comando para crear un topic y ademas mostrar los mensajes en formato key-value
+	- sh bin/kafka-console-consumer.sh --topic arcsystem-nginx-logs --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator="-"
