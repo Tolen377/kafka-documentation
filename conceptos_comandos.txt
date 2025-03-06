@@ -38,6 +38,50 @@ Conceptos
 # El retention period es el tiempo durante el cual Kafka conserva los mensajes en un topic antes de eliminarlos.
 # Este periodo se puede configurar según las necesidades de retención de datos de la aplicación.
 
+# Documentación sobre Grupos de Consumidores en Apache Kafka
+
+# Un grupo de consumidores en Apache Kafka es un conjunto de consumidores
+# que trabajan juntos para procesar mensajes de uno o varios temas de forma
+# paralela y coordinada.
+
+# Conceptos Clave:
+# 1. Trabajo en Paralelo:
+#    - Los consumidores en un grupo pueden procesar mensajes de un tema en paralelo.
+#    - Cada consumidor se encarga de una partición específica del tema.
+#
+# 2. Equilibrio de Carga:
+#    - Kafka distribuye las particiones del tema entre los consumidores del grupo.
+#    - Esto asegura una distribución eficiente de la carga de trabajo.
+#
+# 3. Coordinación:
+#    - Un coordinador de grupo gestiona la distribución de particiones y la membresía del grupo.
+#
+# 4. Identificación:
+#    - Cada grupo de consumidores tiene un identificador único llamado `group.id`.
+#    - Todos los consumidores del mismo grupo comparten el mismo `group.id`.
+#
+# 5. Resiliencia:
+#    - Si un consumidor falla, Kafka redistribuye las particiones entre los consumidores restantes.
+
+# Documentación sobre Offsets en Apache Kafka
+
+# 1. Offset:
+#    - Un offset es un identificador numérico que marca la posición de un consumidor dentro de una partición de un tema de Kafka.
+#    - Cada mensaje en una partición tiene un offset único.
+
+# 2. Tipos de Offsets:
+#    - Earliest Offset: El offset más antiguo, que apunta al comienzo de la cola de mensajes de la partición.
+#    - Latest Offset: El offset más reciente, que apunta al final de la cola de mensajes de la partición.
+#    - Current Offset: El offset del próximo mensaje que será leído por el consumidor.
+#    - Committed Offset: El último offset que ha sido procesado con éxito por el consumidor y confirmado a Kafka.
+
+# 3. Significado de los Offsets:
+#    - Tolerancia a Fallos: Los offsets permiten a Kafka mantener la tolerancia a fallos al permitir que los consumidores reanuden desde el último offset confirmado después de una falla.
+#    - Retención de Datos: Facilitan las políticas de retención de datos al permitir que los consumidores elijan si deben comenzar desde el offset más antiguo o el más reciente.
+#    - Garantías de Procesamiento: Contribuyen a las garantías de procesamiento (al menos una vez, como máximo una vez, exactamente una vez) al controlar cómo se consumen y procesan los mensajes.
+
+
+
 	
 Comando para iniciar zookeeper
 	- sh bin/zookeeper-server-start.sh config/zookeeper.properties
@@ -55,5 +99,27 @@ Comando para crear un producer
 	- sh bin/kafka-console-producer.sh --topic <topicName> --bootstrap-server localhost:9092
 Comando para crear un consumer y leer el historico del topic (leer desde el comienzo)
  - sh bin/kafka-console-consumer.sh --topic arcsystem-nginx-logs --bootstrap-server localhost:9092 --from-beginning
-Comando para crear un topic y ademas mostrar los mensajes en formato key-value
+Comando para crear un consumer y ademas mostrar los mensajes en formato key-value
 	- sh bin/kafka-console-consumer.sh --topic arcsystem-nginx-logs --bootstrap-server localhost:9092 --from-beginning --property print.key=true --property key.separator="-"
+Comando para modificar un topic
+	- sh bin/kafka-topics.sh --bootstrap-server localhost:9092 --alter --topic arcsystem-nginx-logs --partitions 6
+Comando para borrar un topic
+	- sh bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic arcsystem-nginx-logs
+
+# Documentación sobre Configuraciones de Apache Kafka
+
+# 1. linger.ms:
+#    - Especifica el tiempo (en milisegundos) que el productor esperará antes de enviar un lote de mensajes a Kafka.
+#    - Un valor mayor permite acumular más mensajes, mejorando el rendimiento al reducir el número de solicitudes enviadas.
+#    - Valor predeterminado: 0 ms.
+
+# 2. batch.size:
+#    - Define el tamaño máximo del lote de mensajes en bytes.
+#    - Si los mensajes en el lote alcanzan este tamaño antes de que expire el tiempo de linger.ms, el lote se enviará.
+#    - Un valor mayor puede mejorar la eficiencia, pero requiere más memoria en el lado del productor.
+#    - Valor predeterminado: 16 KB.
+
+# 3. buffer.memory:
+#    - Establece el total de memoria disponible para el búfer de mensajes que espera ser enviado al servidor.
+#    - Cuando este búfer se llena, las solicitudes de producción se bloquearán hasta que se libere espacio.
+#    - Valor predeterminado: 32 MB.
